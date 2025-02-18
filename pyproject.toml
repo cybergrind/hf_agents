@@ -1,0 +1,16 @@
+[project]
+name = "hf-ai-agents-course"
+version = "0.1.0"
+description = "Stub project for Hugging Face AI Agents course"
+authors = [{ name = "HuggingFace Inc.", email = "courses@huggingface.co" }]
+license = { text = "Apache-2.0" }
+requires-python = ">=3.13"
+dependencies = [
+    "smolagents",
+]
+
+[dependency-groups]
+dev = [
+    "ipython>=8.32.0",
+    "uv>=0.6.1",
+]
