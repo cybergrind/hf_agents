@@ -6,6 +6,8 @@ authors = [{ name = "HuggingFace Inc.", email = "courses@huggingface.co" }]
 license = { text = "Apache-2.0" }
 requires-python = ">=3.13"
 dependencies = [
+    "gradio-client>=1.7.0",
+    "ipykernel>=6.29.5",
     "smolagents",
 ]
 
