@@ -16,7 +16,47 @@ dependencies = [
 ]
 
 [dependency-groups]
-dev = [
-    "ipython>=8.32.0",
-    "uv>=0.6.1",
+dev = ["ipython>=8.32.0", "pre-commit>=4.1.0", "uv>=0.6.1"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py313"
+indent-width = 4
+exclude = ['.venv', '.git']
+
+[tool.ruff.format]
+quote-style = 'single'
+
+[tool.ruff.lint]
+ignore = [
+    'T201', # print
+    'G004', # logging format
+    'Q000', # quotes
+    'Q001', # quotes
+    'Q003', # quotes
 ]
+fixable = ["ALL"]
+select = [
+    "E",     # pycodestyle
+    "F",     # pyflakes
+    "I",     # isort
+    "G",     # flake8-logging-format
+    "ASYNC", # flake8-async
+    "PIE",   # flake8-pie
+    "T20",   # flake8-print
+    "PT",    # flake8-pytest-style
+    "Q",     # flake8-quotes
+    "RUF",
+]
+exclude = ['alembic/*']
+
+[tool.ruff.lint.flake8-quotes]
+inline-quotes = "single"
+multiline-quotes = "single"
+
+[tool.pytest.ini_options]
+asyncio_mode = 'auto'
+asyncio_default_fixture_loop_scope = 'session'
+norecursedirs = [".git", ".venv"]
+addopts = "--tb=short -s --no-cov-on-fail"
+testpaths = ["tests"]
