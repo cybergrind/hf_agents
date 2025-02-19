@@ -1,5 +1,6 @@
 import argparse
 import logging
+
 from gradio_client import Client
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(levelname)s] %(name)s: %(message)s')
@@ -20,6 +21,7 @@ def main():
     client = Client(CLIENT_NAME)
     response = client.predict(input_text=args.query, api_name=API_NAME)
     log.info(response)
+
 
 if __name__ == '__main__':
     main()
