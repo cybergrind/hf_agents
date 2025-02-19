@@ -6,9 +6,13 @@ authors = [{ name = "HuggingFace Inc.", email = "courses@huggingface.co" }]
 license = { text = "Apache-2.0" }
 requires-python = ">=3.13"
 dependencies = [
+    "bs4>=0.0.2",
+    "duckduckgo-search>=7.4.2",
     "gradio-client>=1.7.0",
     "ipykernel>=6.29.5",
-    "smolagents",
+    "markdownify>=0.14.1",
+    "requests>=2.32.3",
+    "smolagents[gradio]",
 ]
 
 [dependency-groups]

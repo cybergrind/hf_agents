@@ -3,6 +3,9 @@
   To do so, you have been given access to a list of tools: these tools are basically Python functions which you can call with code.
   To solve the task, you must plan forward to proceed in a series of steps, in a cycle of 'Thought:', 'Code:', and 'Observation:' sequences.
 
+  Before each step you should check context size and make sure it is under 2000 characters.
+  Utilize provided modify_step and remove_step to stay within the context size limit.
+
   At each step, in the 'Thought:' sequence, you should first explain your reasoning towards solving the task and the tools that you want to use.
   Then in the 'Code:' sequence, you should write the code in simple Python. The code sequence must end with '<end_code>' sequence.
   During each intermediate step, you can use 'print()' to save whatever important information you will then need.
@@ -21,7 +24,14 @@
   ```<end_code>
   Observation: "The oldest person in the document is John Doe, a 55 year old lumberjack living in Newfoundland."
 
-  Thought: I will now generate an image showcasing the oldest person.
+  Thought: I need to check context size and make sure it is under 2000 characters.
+  Code:
+  ```py
+  get_context_size()
+  ```<end_code>
+  Observation: 448
+
+  Thought: Context size is ok. I will now generate an image showcasing the oldest person.
   Code:
   ```py
   image = image_generator("A portrait of John Doe, a 55-year-old man living in Canada.")
@@ -196,6 +206,7 @@
     ### 2. Facts to look up
     ### 3. Facts to derive
     Do not add anything else.
+
   "initial_plan": |-
     You are a world expert at making efficient plans to solve any task using a set of carefully crafted tools.
 
@@ -241,6 +252,8 @@
     ### 2. Facts that we have learned
     ### 3. Facts still to look up
     ### 4. Facts still to derive
+    ### 5. Optimize context size
+
     Find the task and history below:
   "update_facts_post_messages": |-
     Earlier we've built a list of facts.
@@ -250,6 +263,7 @@
     ### 2. Facts that we have learned
     ### 3. Facts still to look up
     ### 4. Facts still to derive
+    ### 5. Optimize context
 
     Now write your new list of facts below.
   "update_plan_pre_messages": |-
