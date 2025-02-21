@@ -22,6 +22,7 @@ dependencies = [
 dev = [
     'ipython>=8.32.0',
     'pre-commit>=4.1.0',
+    "pytest-asyncio>=0.25.3",
     "pytest>=8.3.4",
     'uv>=0.6.1',
 ]
@@ -66,5 +67,5 @@ multiline-quotes = 'single'
 asyncio_mode = 'auto'
 asyncio_default_fixture_loop_scope = 'session'
 norecursedirs = ['.git', '.venv']
-addopts = '--tb=short -s --no-cov-on-fail'
+addopts = '--tb=short -s'
 testpaths = ['tests']

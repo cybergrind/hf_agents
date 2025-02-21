@@ -1,48 +1,39 @@
+# Import necessary modules
 from pathlib import Path
+from typing import List, Union
 
-from smolagents import tool
-
-
-@tool
-def list_directory_contents(directory: str) -> list[Path]:
-    """List the contents of a directory.
-
+# Tool to list directory contents
+def list_directory_contents(directory: str) -> List[str]:
+    """Tool that lists the contents of a directory.
     Args:
-        directory: The directory path to list contents and files.
-
+        directory (str): The path to the directory to list contents.
     Returns:
-        list[Path]: A list of paths representing the contents of the directory.
+        List[str]: A list of file and directory names in the specified directory.
     """
-    directory = Path(directory)
-    if not directory.is_dir():
-        raise ValueError(f'The provided path {directory} is not a directory.')
-    return list(directory.iterdir())
+    path = Path(directory)
+    if not path.exists():
+        raise ValueError(f"Directory {directory} does not exist.")
+    return [str(item.name) for item in path.iterdir()]
 
-
-@tool
+# Tool to get file contents
 def get_file_contents(file_path: str) -> str:
-    """Get the contents of a file.
-
+    """Tool that gets the contents of a file.
     Args:
-        file_path: The path to the file.
-
+        file_path (str): The path to the file.
     Returns:
         str: The contents of the file.
     """
-    file_path = Path(file_path)
-    if not file_path.is_file():
-        raise ValueError(f'The provided path {file_path} is not a file.')
-    return file_path.read_text(encoding='utf-8')
+    path = Path(file_path)
+    if not path.exists():
+        raise ValueError(f"File {file_path} does not exist.")
+    return path.read_text()
 
-
-@tool
+# Tool to write content to a file
 def write_content_to_file(file_path: str, content: str) -> None:
-    """Write content to a file.
-
+    """Tool that writes content to a file.
     Args:
-        file_path: The path to the file.
-        content: The content to write to the file.
+        file_path (str): The path to the file.
+        content (str): The content to write to the file.
     """
-    file_path = Path(file_path)
-    file_path.parent.mkdir(parents=True, exist_ok=True)
-    file_path.write_text(content, encoding='utf-8')
+    path = Path(file_path)
+    path.write_text(content)

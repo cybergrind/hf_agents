@@ -14,6 +14,7 @@ from first_agent.Gradio_UI import GradioUI
 from first_agent.tools.final_answer import FinalAnswerTool
 from first_agent.tools.visit_webpage import VisitWebpageTool
 from tools.editor import get_file_contents, list_directory_contents, write_content_to_file
+from tools.testing import run_tests
 
 PROMPTS_FILE = Path(__file__).parent / 'prompts.yaml'
 GLOBAL_AGENT = None
@@ -226,6 +227,7 @@ agent = CodeAgent(
         list_directory_contents,
         get_file_contents,
         write_content_to_file,
+        run_tests,
     ],  # add your tools here (don't remove final_answer)
     max_steps=20,
     verbosity_level=1,
@@ -244,6 +246,8 @@ agent = CodeAgent(
         'os',
         'typing',
         'itertools',
+        'pytest',
+        'tools'
     ],
 )
 GLOBAL_AGENT = agent
