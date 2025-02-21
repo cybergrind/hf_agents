@@ -3,7 +3,7 @@ https://huggingface.co/learn/agents-course/
 
 ```bash
 # first agent
-uv run first_agent/first_agent.py
+uv run first_agent
 
 # repl
 uv run ipython
