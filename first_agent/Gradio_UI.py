@@ -90,7 +90,11 @@ def pull_messages_from_step(
                     yield gr.ChatMessage(
                         role='assistant',
                         content=f'{log_content}',
-                        metadata={'title': '📝 Execution Logs', 'parent_id': parent_id, 'status': 'done'},
+                        metadata={
+                            'title': '📝 Execution Logs',
+                            'parent_id': parent_id,
+                            'status': 'done',
+                        },
                     )
 
             # Nesting any errors under the tool call
@@ -245,7 +249,10 @@ class GradioUI:
         file_path = os.path.join(self.file_upload_folder, os.path.basename(sanitized_name))
         shutil.copy(file.name, file_path)
 
-        return gr.Textbox(f'File uploaded: {file_path}', visible=True), [*file_uploads_log, file_path]
+        return gr.Textbox(f'File uploaded: {file_path}', visible=True), [
+            *file_uploads_log,
+            file_path,
+        ]
 
     def log_user_message(self, text_input, file_uploads_log):
         return (

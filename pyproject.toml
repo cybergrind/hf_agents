@@ -1,26 +1,34 @@
+[project.scripts]
+first_agent = 'first_agent:first_agent.main'
+
 [project]
-name = "hf-ai-agents-course"
-version = "0.1.0"
-description = "Stub project for Hugging Face AI Agents course"
-authors = [{ name = "HuggingFace Inc.", email = "courses@huggingface.co" }]
-license = { text = "Apache-2.0" }
-requires-python = ">=3.13"
+name = 'hf-ai-agents-course'
+version = '0.1.0'
+description = 'Stub project for Hugging Face AI Agents course'
+authors = [{ name = 'github.com/cybergrind' }]
+license = { text = 'Apache-2.0' }
+requires-python = '>=3.13'
 dependencies = [
-    "bs4>=0.0.2",
-    "duckduckgo-search>=7.4.2",
-    "gradio-client>=1.7.0",
-    "ipykernel>=6.29.5",
-    "markdownify>=0.14.1",
-    "requests>=2.32.3",
-    "smolagents[gradio]",
+  'beautifulsoup4>=4.13.3',
+  'duckduckgo-search>=7.4.2',
+  'gradio-client>=1.7.0',
+  'ipykernel>=6.29.5',
+  'markdownify>=0.14.1',
+  'requests>=2.32.3',
+  'smolagents[gradio,e2b]',
 ]
 
 [dependency-groups]
-dev = ["ipython>=8.32.0", "pre-commit>=4.1.0", "uv>=0.6.1"]
+dev = [
+    'ipython>=8.32.0',
+    'pre-commit>=4.1.0',
+    "pytest>=8.3.4",
+    'uv>=0.6.1',
+]
 
 [tool.ruff]
 line-length = 120
-target-version = "py313"
+target-version = 'py313'
 indent-width = 4
 exclude = ['.venv', '.git']
 
@@ -29,34 +37,34 @@ quote-style = 'single'
 
 [tool.ruff.lint]
 ignore = [
-    'T201', # print
-    'G004', # logging format
-    'Q000', # quotes
-    'Q001', # quotes
-    'Q003', # quotes
+  'T201', # print
+  'G004', # logging format
+  'Q000', # quotes
+  'Q001', # quotes
+  'Q003', # quotes
 ]
-fixable = ["ALL"]
+fixable = ['ALL']
 select = [
-    "E",     # pycodestyle
-    "F",     # pyflakes
-    "I",     # isort
-    "G",     # flake8-logging-format
-    "ASYNC", # flake8-async
-    "PIE",   # flake8-pie
-    "T20",   # flake8-print
-    "PT",    # flake8-pytest-style
-    "Q",     # flake8-quotes
-    "RUF",
+  'E',     # pycodestyle
+  'F',     # pyflakes
+  'I',     # isort
+  'G',     # flake8-logging-format
+  'ASYNC', # flake8-async
+  'PIE',   # flake8-pie
+  'T20',   # flake8-print
+  'PT',    # flake8-pytest-style
+  'Q',     # flake8-quotes
+  'RUF',
 ]
 exclude = ['alembic/*']
 
 [tool.ruff.lint.flake8-quotes]
-inline-quotes = "single"
-multiline-quotes = "single"
+inline-quotes = 'single'
+multiline-quotes = 'single'
 
 [tool.pytest.ini_options]
 asyncio_mode = 'auto'
 asyncio_default_fixture_loop_scope = 'session'
-norecursedirs = [".git", ".venv"]
-addopts = "--tb=short -s --no-cov-on-fail"
-testpaths = ["tests"]
+norecursedirs = ['.git', '.venv']
+addopts = '--tb=short -s --no-cov-on-fail'
+testpaths = ['tests']

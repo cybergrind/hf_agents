@@ -1,24 +1,24 @@
-import sys
-from dataclasses import dataclass
-from pathlib import Path
-
-sys.path.append('first_agent')
-
 import datetime
 import logging
+from dataclasses import dataclass
+from pathlib import Path
 from typing import Any
 
 import pytz
 import yaml
-from Gradio_UI import GradioUI
 from smolagents import CodeAgent, DuckDuckGoSearchTool, HfApiModel, load_tool, tool
 from smolagents.memory import MemoryStep, Message
 from smolagents.models import MessageRole
-from tools.final_answer import FinalAnswerTool
-from tools.visit_webpage import VisitWebpageTool
+
+from first_agent.Gradio_UI import GradioUI
+from first_agent.tools.final_answer import FinalAnswerTool
+from first_agent.tools.visit_webpage import VisitWebpageTool
+from tools.editor import get_file_contents, list_directory_contents, write_content_to_file
 
 PROMPTS_FILE = Path(__file__).parent / 'prompts.yaml'
 GLOBAL_AGENT = None
+MODEL_ID = 'Qwen/Qwen2.5-Coder-32B-Instruct'
+# MODEL_ID = 'google/gemma-2-2b-it'
 
 
 class Fake:
@@ -49,7 +49,7 @@ def list_steps() -> dict[int, str]:  # it's important to specify the return type
 
 @tool
 def get_step(num: int) -> (str, dict):
-    """Tool that returns a specific step.
+    """Tool for context size calculation.
     Args:
         num: A number representing the step to return.
 
@@ -69,13 +69,16 @@ class SummarizedStep(MemoryStep):
 
     def to_messages(self, **kwargs) -> list[Message]:
         return [
-            Message(role=MessageRole.SYSTEM, content=[{'type': 'text', 'text': f'[STEP_SUMMARY]:\n{self.summarized}'}])
+            Message(
+                role=MessageRole.SYSTEM,
+                content=[{'type': 'text', 'text': f'[STEP_SUMMARY]:\n{self.summarized}'}],
+            )
         ]
 
 
 @tool
 def modify_step(step_num: int, summarized: str) -> None:
-    """Tool that replaces the step at the given index with a summarized version.
+    """Tool that allows to reduce context size
 
     Args:
         step_num: The index of the step to replace.
@@ -89,7 +92,7 @@ def modify_step(step_num: int, summarized: str) -> None:
 
 @tool
 def remove_step(step_num: int) -> None:
-    """Tool that removes the step at the given index.
+    """Tool that allows to reduce context size by removing a step.
 
     Args:
         step_num: The index of the step to remove.
@@ -102,7 +105,7 @@ def remove_step(step_num: int) -> None:
 
 @tool
 def get_context_size() -> int:
-    """Tool that returns the size of the agent's memory."""
+    """Tool for monitoring context size."""
     agent = AGENT.get()
     if agent is None:
         raise ValueError('Agent not initialized')
@@ -171,7 +174,7 @@ visit_webpage = VisitWebpageTool()
 model = HfApiModel(
     max_tokens=2096,
     temperature=0.5,
-    model_id='Qwen/Qwen2.5-Coder-32B-Instruct',
+    model_id=MODEL_ID,
     custom_role_conversions=None,
 )
 
@@ -182,6 +185,30 @@ image_generation_tool = load_tool('agents-course/text-to-image', trust_remote_co
 with PROMPTS_FILE.open('r') as stream:
     prompt_templates = yaml.safe_load(stream)
 
+# agent = ToolCallingAgent(
+#     model=model,
+#     tools=[
+#         final_answer,
+#         visit_webpage,
+#         DuckDuckGoSearchTool(),
+#         list_steps,
+#         get_step,
+#         modify_step,
+#         # remove_step,
+#         get_context_size,
+#         persist_in_memory,
+#         get_from_persistent_memory,
+#         log_global_memory,
+#     ],  # add your tools here (don't remove final_answer)
+#     max_steps=20,
+#     verbosity_level=1,
+#     grammar=None,
+#     planning_interval=None,
+#     name=None,
+#     description=None,
+#     prompt_templates=prompt_templates,
+#     # additional_authorized_imports=['requests', 're', 'json', 'bs4'],
+# )
 agent = CodeAgent(
     model=model,
     tools=[
@@ -196,6 +223,9 @@ agent = CodeAgent(
         persist_in_memory,
         get_from_persistent_memory,
         log_global_memory,
+        list_directory_contents,
+        get_file_contents,
+        write_content_to_file,
     ],  # add your tools here (don't remove final_answer)
     max_steps=20,
     verbosity_level=1,
@@ -204,7 +234,17 @@ agent = CodeAgent(
     name=None,
     description=None,
     prompt_templates=prompt_templates,
-    additional_authorized_imports=['requests', 're', 'json', 'bs4'],
+    use_e2b_executor=False,
+    additional_authorized_imports=[
+        'requests',
+        're',
+        'json',
+        'bs4',
+        'pathlib',
+        'os',
+        'typing',
+        'itertools',
+    ],
 )
 GLOBAL_AGENT = agent
 

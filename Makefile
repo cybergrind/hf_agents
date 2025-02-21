@@ -1,6 +1,9 @@
 
+first:
+	uv run first_agent
+
 check:
-	pre-commit run --all-files
+	uv run pre-commit run --all-files
 
 precommit:
-	pre-commit run -s origin/main -o HEAD
+	uv run pre-commit run -s origin/main -o HEAD
