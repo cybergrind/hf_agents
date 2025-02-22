@@ -29,7 +29,7 @@ def get_file_contents(file_path: str) -> str:
     """
     path = Path(file_path)
     if not path.exists():
-        raise ValueError(f'File {file_path} does not exist.')
+        raise FileNotFoundError(f'File {file_path} does not exist.')
     return path.read_text()
 
 

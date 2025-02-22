@@ -1,56 +1,65 @@
-# Import necessary modules
-from pathlib import Path
+import pathlib
+
+import pytest
 
 from tools.editor import get_file_contents, list_directory_contents, write_content_to_file
 
 
-# Test list_directory_contents
-def test_list_directory_contents():
-    """Test list_directory_contents function"""
-    # Create a temporary directory and some files
-    temp_dir = Path('temp_test_dir')
-    if temp_dir.exists():
-        for file in temp_dir.iterdir():
-            file.unlink()
-        temp_dir.rmdir()
-    temp_dir.mkdir()
-    (temp_dir / 'test_file1.txt').touch()
-    (temp_dir / 'test_file2.txt').touch()
+@pytest.fixture()
+def test_directory(tmp_path: pathlib.Path) -> pathlib.Path:
+    test_dir = tmp_path / 'test_dir'
+    test_dir.mkdir()
+    (test_dir / 'file1.txt').write_text('This is file 1')
+    (test_dir / 'file2.txt').write_text('This is file 2')
 
-    # Check if the function lists the correct contents
-    assert sorted(list_directory_contents(str(temp_dir))) == ['test_file1.txt', 'test_file2.txt']
+    typeshed = test_dir / 'typeshed'
+    typeshed.mkdir()
+    (typeshed / 'file3.txt').write_text('This is file 3')
 
-    # Clean up
-    for file in temp_dir.iterdir():
-        file.unlink()
-    temp_dir.rmdir()
+    return test_dir
 
 
-# Test get_file_contents
-def test_get_file_contents():
-    """Test get_file_contents function"""
-    # Create a temporary file with some content
-    temp_file = Path('temp_test_file.txt')
-    temp_file.write_text('Test content')
-
-    # Check if the function reads the correct content
-    assert get_file_contents(str(temp_file)) == 'Test content'
-
-    # Clean up
-    temp_file.unlink()
+def test_list_directory_contents(test_directory: pathlib.Path) -> None:
+    contents = list_directory_contents(str(test_directory))
+    expected_contents = ['file1.txt', 'file2.txt', 'typeshed']
+    assert sorted(contents) == sorted(expected_contents)
 
 
-# Test write_content_to_file
-def test_write_content_to_file():
-    """Test write_content_to_file function"""
-    # Create a temporary file
-    temp_file = Path('temp_test_file.txt')
+def test_list_directory_contents_empty_directory(tmp_path: pathlib.Path) -> None:
+    empty_dir = tmp_path / 'empty_dir'
+    empty_dir.mkdir()
+    contents = list_directory_contents(str(empty_dir))
+    assert contents == []
 
-    # Write content to the file
-    write_content_to_file(str(temp_file), 'Test content')
 
-    # Check if the file contains the correct content
-    assert temp_file.read_text() == 'Test content'
+def test_get_file_contents(test_directory: pathlib.Path) -> None:
+    file_path = test_directory / 'file1.txt'
+    content = get_file_contents(str(file_path))
+    assert content == 'This is file 1'
 
-    # Clean up
-    temp_file.unlink()
+
+def test_get_file_contents_nonexistent_file(test_directory: pathlib.Path) -> None:
+    file_path = test_directory / 'nonexistent_file.txt'
+    with pytest.raises(FileNotFoundError):
+        get_file_contents(str(file_path))
+
+
+def test_write_content_to_file(test_directory: pathlib.Path) -> None:
+    new_file_path = test_directory / 'new_file.txt'
+    write_content_to_file(str(new_file_path), 'This is a new file')
+    content = get_file_contents(str(new_file_path))
+    assert content == 'This is a new file'
+
+
+def test_write_content_to_file_existing_file(test_directory: pathlib.Path) -> None:
+    file_path = test_directory / 'file1.txt'
+    write_content_to_file(str(file_path), 'Overwritten content')
+    content = get_file_contents(str(file_path))
+    assert content == 'Overwritten content'
+
+
+def test_write_content_to_file_nonexistent_directory(tmp_path: pathlib.Path) -> None:
+    nonexistent_dir = tmp_path / 'nonexistent_dir'
+    file_path = nonexistent_dir / 'new_file.txt'
+    with pytest.raises(FileNotFoundError):
+        write_content_to_file(str(file_path), 'This is a new file')
