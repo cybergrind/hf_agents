@@ -2,7 +2,7 @@ import logging
 from pathlib import Path
 
 import yaml
-from smolagents import CodeAgent, DuckDuckGoSearchTool, HfApiModel, load_tool
+from smolagents import CodeAgent, DuckDuckGoSearchTool, HfApiModel, OpenAIServerModel, load_tool
 
 from first_agent.context_tools import (
     get_context_size,
@@ -38,6 +38,8 @@ model = HfApiModel(
     model_id=MODEL_ID,
     custom_role_conversions=None,
 )
+
+model = OpenAIServerModel(model_id='gpt-3.5-turbo', api_base='http://localhost:5000/v1', api_key='local_key')
 
 
 # Import tool from Hub
@@ -84,6 +86,7 @@ agent = CodeAgent(
         'itertools',
         'pytest',
         'tools',
+        'yaml',
     ],
 )
 set_context_agent(agent)
